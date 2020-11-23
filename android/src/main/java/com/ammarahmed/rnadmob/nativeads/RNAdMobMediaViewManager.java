@@ -16,10 +16,7 @@ public class RNAdMobMediaViewManager extends ViewGroupManager<RNMediaView> {
 
     @Override
     protected RNMediaView createViewInstance(ThemedReactContext reactContext) {
-
-        mediaView = new RNMediaView(reactContext);
-
-        return mediaView;
+        return new RNMediaView(reactContext);
     }
 
 }
