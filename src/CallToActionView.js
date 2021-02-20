@@ -1,34 +1,30 @@
-import React, { createRef, useContext, useEffect } from "react";
-import { findNodeHandle, Text } from "react-native";
-import {
-  RawButton,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
+import React, { useContext, useEffect,useRef, useCallback } from "react";
+import { findNodeHandle, Text, View } from "react-native";
 import { NativeAdContext } from "./context";
 
 const CallToActionView = (props) => {
-  const { nativeAd, nativeAdView } = useContext(NativeAdContext);
-  const callToActionRef = createRef();
-  const _onLayout = () => {
-    if (!nativeAdView) return;
-    let handle = findNodeHandle(callToActionRef.current);
+  const {nativeAd, nativeAdView} = useContext(NativeAdContext);
+  const callToActionRef = useRef();
+
+  const _onLayout = useCallback(() => {
+    if (!nativeAdView) {
+      return;
+    }
     nativeAdView.setNativeProps({
-      callToAction: handle,
+      callToAction: findNodeHandle(callToActionRef.current),
     });
-  };
+  }, [nativeAdView]);
 
   useEffect(() => {
     _onLayout();
-  }, [nativeAd, nativeAdView]);
+  }, [_onLayout]);
 
   return (
-    <GestureHandlerRootView>
-      <RawButton
-        ref={callToActionRef}
-        onLayout={_onLayout}
+      <View
         style={props.style}
-      >
+        onLayout={_onLayout}>
         <Text
+          ref={callToActionRef}
           allowFontScaling={
             props.allowFontScaling ? props.allowFontScaling : false
           }
@@ -40,8 +36,7 @@ const CallToActionView = (props) => {
               : nativeAd.callToAction
             : null}
         </Text>
-      </RawButton>
-    </GestureHandlerRootView>
+      </View>
   );
 };
 
